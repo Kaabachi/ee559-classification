@@ -276,7 +276,17 @@ class CNNet(nn.Module):
         
         return input_1,input_2,x
     
-def compute_errors(Net,model,data,n_samples):
+def compute_error(Net,model,data,n_samples):
+    """
+    These function compute the accuracy error by comparing our output with the targets
+    
+    Input: Net: 'BaselineNet' , 'FullyConnectedNet' , 'ResNet' , 'CNN', 'LeNet'
+           Model: The trained Model
+           Data: Containing the input and the targets
+           n_samples: Number of input samples
+    
+    Output: accuracy error in %
+    """
     nb_errors = 0
     if (Net == 'BaselineNet'or
                 Net == 'FullyConnectedNet'or 
@@ -302,7 +312,24 @@ def train_Net_model(Net = 'LeNet',
                     weight_sharing = False, auxilary_loss = False,
                     batch_size = 100, n_epochs = 25, lr = 0.2, 
                     verbose = False):
+    """
+    We designed this function in order to test all our models.
     
+    
+    Input: Net: 'BaselineNet' , 'FullyConnectedNet' , 'ResNet' , 'CNN', 'LeNet'
+           weight_sharing: Boolean (Works only with 'CNN' and 'LeNet' otw ignored)
+           auxilary_loss: Boolean (Works only with 'CNN' and 'LeNet' otw ignored)
+           Batch_size: Int
+           n_epochs: Int
+           lr: Learning rate, Float
+           verbose: If it's true, the algorithm will print the epochs errors.
+           
+    Output: Model: Model with the trained parameters
+            Errors: Array of errors over the epochs
+            Training Accuracy Errors: Array over the epochs
+            Testing Accuracy Errors: Array over the epochs
+    
+    """
     if Net == 'CNN':
         model = CNNet(weight_sharing, activation_conv = 'tanh', activation_fully = 'tanh')
     elif Net == 'BaselineNet':
@@ -360,12 +387,12 @@ def train_Net_model(Net = 'LeNet',
                          train_target.split(batch_size),
                          train_classes.split(batch_size))   
         
-        train_error.append(compute_errors(Net,model,train_data,train_input.size(0)))
-        test_error.append(compute_errors(Net,model,test_data,test_input.size(0)))
+        train_error.append(compute_error(Net,model,train_data,train_input.size(0)))
+        test_error.append(compute_error(Net,model,test_data,test_input.size(0)))
         
         if(e%5 ==0) and verbose:
             print('epoch : ',e,' loss : ',loss.item())
     
-    print("Training accuracy = {0:.2f}%, Testing accuracy = {1:.2f}%\n".format(100 - train_error[-1], 100 - test_error[-1]), )
+    print("Training accuracy = {0:.2f}%, Testing accuracy = {1:.2f}%\n".format(100-train_error[-1],100-test_error[-1]))
                
     return model, error, train_error, test_error

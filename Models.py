@@ -366,6 +366,6 @@ def train_Net_model(Net = 'LeNet',
         if(e%5 ==0) and verbose:
             print('epoch : ',e,' loss : ',loss.item())
     
-    print("Training accuracy = {0:.2f}%, Testing accuracy = {1:.2f}%\n".format(train_error[-1],test_error[-1]), )
+    print("Training accuracy = {0:.2f}%, Testing accuracy = {1:.2f}%\n".format(100 - train_error[-1], 100 - test_error[-1]), )
                
     return model, error, train_error, test_error
